@@ -1,68 +1,61 @@
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = process.cwd();
-const classesDir = path.join(root, 'classes');
-const dataDir = path.join(root, 'data');
-const distDir = path.join(root, 'dist');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-async function exists(p) {
-  try { await fs.access(p); return true; } catch { return false; }
+// Root path configuration
+const rootDir = path.resolve(__dirname, '..');
+const classesDir = path.join(rootDir, 'classes');
+const distDir = path.join(rootDir, 'dist');
+const distClassesDir = path.join(distDir, 'classes');
+
+// Clean and create dist directory
+if (fs.existsSync(distDir)) {
+    fs.rmSync(distDir, { recursive: true, force: true });
+}
+fs.mkdirSync(distClassesDir, { recursive: true });
+
+// Copy src assets to dist
+const srcDir = path.join(rootDir, 'src');
+if (fs.existsSync(srcDir)) {
+    fs.cpSync(srcDir, distDir, { recursive: true });
 }
 
-async function walk(dir, base = dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const out = [];
-  for (const entry of entries.sort((a,b) => a.name.localeCompare(b.name))) {
-    const full = path.join(dir, entry.name);
-    const rel = path.relative(base, full).split(path.sep).join('/');
-    if (entry.isDirectory()) out.push(...await walk(full, base));
-    else out.push(rel);
-  }
-  return out;
+// Read all class directories
+const classDirs = fs.readdirSync(classesDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+const classesData = [];
+
+for (const dirName of classDirs) {
+    const classFolderPath = path.join(classesDir, dirName);
+    const jsonPath = path.join(classFolderPath, 'class.json');
+
+    if (fs.existsSync(jsonPath)) {
+        try {
+            const rawData = fs.readFileSync(jsonPath, 'utf8');
+            const classInfo = JSON.parse(rawData);
+            classInfo.slug = dirName;
+            classesData.push(classInfo);
+
+            // Copy individual class folder to dist/classes
+            fs.cpSync(classFolderPath, path.join(distClassesDir, dirName), { recursive: true });
+        } catch (err) {
+            console.error(`Error processing class in ${dirName}:`, err);
+        }
+    }
 }
 
-await fs.rm(distDir, { recursive: true, force: true });
-await fs.mkdir(path.join(distDir, 'classes'), { recursive: true });
-await fs.mkdir(dataDir, { recursive: true });
+// Sort classes by order or slug if available
+classesData.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-const siteConfig = JSON.parse(await fs.readFile(path.join(root, 'site.config.json'), 'utf8'));
-const classNames = (await fs.readdir(classesDir, { withFileTypes: true }))
-  .filter(x => x.isDirectory())
-  .map(x => x.name)
-  .sort();
+// Output classes.json for runtime rendering
+fs.writeFileSync(
+    path.join(distDir, 'classes.json'),
+    JSON.stringify(classesData, null, 2)
+);
 
-const classes = [];
-for (const dirName of classNames) {
-  const classRoot = path.join(classesDir, dirName);
-  const metaPath = path.join(classRoot, 'class.json');
-  if (!(await exists(metaPath))) {
-    console.warn(`Skipping ${dirName}: missing class.json`);
-    continue;
-  }
-  let meta;
-  try { meta = JSON.parse(await fs.readFile(metaPath, 'utf8')); }
-  catch (err) { throw new Error(`Invalid JSON in ${dirName}/class.json: ${err.message}`); }
-  if (!meta.id || !meta.title) throw new Error(`Class ${dirName} must include id and title.`);
-  const files = await walk(classRoot);
-  if (!files.includes(meta.entry ?? 'index.html')) console.warn(`Warning: ${dirName} entry file missing.`);
-  classes.push({ ...meta, slug: dirName, files });
-}
-
-await fs.writeFile(path.join(dataDir, 'classes.json'), JSON.stringify(classes, null, 2));
-await fs.writeFile(path.join(distDir, 'classes.json'), JSON.stringify(classes));
-await fs.writeFile(path.join(distDir, 'site-config.json'), JSON.stringify(siteConfig));
-
-const copyPaths = ['src/index.html', 'src/app.js', 'src/styles.css'];
-for (const rel of copyPaths) {
-  const target = path.join(distDir, path.basename(rel));
-  await fs.copyFile(path.join(root, rel), target);
-}
-
-for (const relClass of classNames) {
-  const source = path.join(classesDir, relClass);
-  const target = path.join(distDir, 'classes', relClass);
-  await fs.cp(source, target, { recursive: true });
-}
-
-console.log(`Built ${classes.length} classes.`);
+console.log(`Successfully built ${classesData.length} classes into /dist directory!`);
