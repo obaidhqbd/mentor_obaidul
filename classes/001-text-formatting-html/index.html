@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="HTML Text Formatting practice class for web development students." />
+  <title>HTML Text Formatting</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="lesson">
+    <header class="hero">
+      <span class="eyebrow">CLASS 01 · HTML BASICS</span>
+      <h1>Text Formatting in HTML</h1>
+      <p class="lead">
+        Learn how to make text meaningful, readable, and visually structured using
+        semantic HTML elements.
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="number">01</span>
+        <div>
+          <h2>Headings & Paragraphs</h2>
+          <p>Every page starts with a clear content hierarchy.</p>
+        </div>
+      </div>
+
+      <h1>Heading Level 1</h1>
+      <h2>Heading Level 2</h2>
+      <h3>Heading Level 3</h3>
+
+      <p>
+        This is a normal paragraph. Good HTML is not just about how text looks.
+        It is also about giving the browser and other tools a clear understanding
+        of the content structure.
+      </p>
+
+      <p>
+        A second paragraph keeps related ideas together and makes long content
+        easier to read.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="number">02</span>
+        <div>
+          <h2>Important Text</h2>
+          <p>Use semantic elements when the meaning of the text matters.</p>
+        </div>
+      </div>
+
+      <div class="demo-grid">
+        <article class="demo-item">
+          <span class="label">&lt;strong&gt;</span>
+          <p><strong>This text is important.</strong></p>
+        </article>
+
+        <article class="demo-item">
+          <span class="label">&lt;em&gt;</span>
+          <p><em>This text has emphasis.</em></p>
+        </article>
+
+        <article class="demo-item">
+          <span class="label">&lt;mark&gt;</span>
+          <p><mark>This text is highlighted.</mark></p>
+        </article>
+
+        <article class="demo-item">
+          <span class="label">&lt;small&gt;</span>
+          <p><small>This is supporting text.</small></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="number">03</span>
+        <div>
+          <h2>Changes & Revisions</h2>
+          <p>Useful when showing old and new information.</p>
+        </div>
+      </div>
+
+      <p>
+        Original price:
+        <del>$120</del>
+        <strong>$89</strong>
+      </p>
+
+      <p>
+        Course status:
+        <ins>Enrollment is now open.</ins>
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="number">04</span>
+        <div>
+          <h2>Subscript & Superscript</h2>
+          <p>Perfect for formulas, units, and scientific notation.</p>
+        </div>
+      </div>
+
+      <div class="formula">
+        <p>Water: H<sub>2</sub>O</p>
+        <p>Einstein's equation: E = mc<sup>2</sup></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <span class="number">05</span>
+        <div>
+          <h2>Inline Code & Quotes</h2>
+          <p>Use code and quotation elements to make technical content clearer.</p>
+        </div>
+      </div>
+
+      <p>
+        The <code>&lt;strong&gt;</code> element communicates important text.
+      </p>
+
+      <blockquote>
+        Write HTML for meaning first, then use CSS to control presentation.
+      </blockquote>
+    </section>
+
+    <section class="card challenge">
+      <div class="section-heading">
+        <span class="number">06</span>
+        <div>
+          <h2>Mini Challenge</h2>
+          <p>Open the editor and change the content below.</p>
+        </div>
+      </div>
+
+      <ol>
+        <li>Change the main heading.</li>
+        <li>Highlight one sentence with <code>&lt;mark&gt;</code>.</li>
+        <li>Add one deleted price and one inserted price.</li>
+        <li>Write a chemistry formula using <code>&lt;sub&gt;</code>.</li>
+        <li>Write a math formula using <code>&lt;sup&gt;</code>.</li>
+      </ol>
+
+      <button id="challengeButton" type="button">Check My Motivation</button>
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

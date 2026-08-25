@@ -1,0 +1,25 @@
+{
+  "id": "001-text-formatting-html",
+  "title": "Text Formatting in HTML",
+  "description": "Learn how to format and structure text using important HTML elements such as headings, paragraphs, strong, emphasis, underline, mark, small, del, ins, sub, sup, and code.",
+  "category": "HTML",
+  "level": "Beginner",
+  "tags": [
+    "HTML",
+    "Text Formatting",
+    "Typography",
+    "Beginner"
+  ],
+  "date": "2026-08-25",
+  "duration": "35 min",
+  "technologies": [
+    "HTML5",
+    "CSS3",
+    "JavaScript"
+  ],
+  "featured": true,
+  "homework": {
+    "title": "Build a formatted article",
+    "description": "Create a small article using at least 8 different HTML text-formatting elements covered in this class."
+  }
+}
